@@ -37,43 +37,60 @@ def translate_to(prog):
 
 class Memory:
     def __init__(self):
+        self.mp = 0
         self.values = {}
 
-    def inc(self, mp):
-        if mp in self.values:
-            self.values[mp] += 1
+    def inc(self):
+        if self.mp in self.values:
+            self.values[self.mp] += 1
         else:
-            self.values[mp] = 1
+            self.values[self.mp] = 1
 
-    def dec(self, mp):
-        if mp in self.values:
-            self.values[mp] -= 1
+    def dec(self):
+        if self.mp in self.values:
+            self.values[self.mp] -= 1
         else:
-            self.values[mp] = -1
+            self.values[self.mp] = -1
 
-    def get(self, mp):
-        if mp in self.values:
-            return self.values[mp]
+    def left(self):
+        self.mp -= 1
+
+    def right(self):
+        self.mp += 1
+
+    def get(self):
+        if self.mp in self.values:
+            return self.values[self.mp]
         else:
             return 0
 
-    def set(self, mp, value):
-        self.values[mp] = value
+    def set(self, value):
+        self.values[self.mp] = value
 
     def __str__(self):
-        return str(self.values)
+        row0 = []
+        for i in range(self.mp - 10, self.mp + 11):
+            val = 0
+            if i in self.values:
+                val = self.values[i]
+            s0 = str(val)
+            s1 = str(i)
+            if i == self.mp:
+                s1 = "*" + s1 + "*"
+            row0.append(s1 + ":" + s0)
+        return "|".join(row0)
+
 
 def run(prog):
     print("start")
     steps = 0
     reg = None
-    mp = 0
     pp = 0
     mem = Memory()
     while pp < len(prog) and steps < 10000:
         cmd = prog[pp]
         if cmd == "mex":
-            cmd = cmds[order[mem.get(mp)]]
+            cmd = cmds[order[mem.get()]]
 
         if cmd == "end":
             pp -= 1
@@ -86,16 +103,16 @@ def run(prog):
                     level += 1
             pp -= 1
         elif cmd == "mp-":
-            mp -= 1
+            mem.dec()
         elif cmd == "mp+":
-            mp += 1
+            mem.right()
         elif cmd == "prs":
-            print(chr(mem.get(mp)))
+            print(chr(mem.get()))
         elif cmd == "mv-":
-            mem.dec(mp)
+            mem.dec()
         elif cmd == "mv+":
-            mem.inc(mp)
-        elif cmd == "for" and mem.get(mp) == 0:
+            mem.inc()
+        elif cmd == "for" and mem.get() == 0:
             pp += 1
             level = 1
             while level > 0:
@@ -104,17 +121,17 @@ def run(prog):
                     level += 1
                 elif prog[pp] == "end":
                     level -= 1
-        elif cmd == "for" and mem.get(mp) != 0:
+        elif cmd == "for" and mem.get() != 0:
             pass
         elif cmd == "zer":
-            mem.set(mp, 0)
+            mem.set(0)
         elif cmd == "reg" and reg is None:
-            reg = mem.get(mp)
+            reg = mem.get()
         elif cmd == "reg" and reg is not None:
-            mem.set(mp, reg)
+            mem.set(reg)
             reg = None
         elif cmd == "prn":
-            print(mem.get(mp))
+            print(mem.get())
         else:
             print(cmd)
             raise
