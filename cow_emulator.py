@@ -1,3 +1,4 @@
+from typing import List
 
 cmds = {"moo": "end",
         "mOo": "mp-",
@@ -12,20 +13,32 @@ cmds = {"moo": "end",
         "OOM": "prn",  # print number from mem
         "oom": "inp"}  # read an int
 
-order = ["moo" ,"mOo" ,"moO" ,"mOO" ,"Moo" ,"MOo" ,"MoO" ,"MOO" ,"OOO" ,"MMM" ,"OOM" ,"oom"]
+order = ["moo", "mOo", "moO", "mOO", "Moo", "MOo", "MoO", "MOO", "OOO", "MMM", "OOM", "oom"]
 
-def translate_from(program: str):
-    program = program.replace(' ', '')
-    program = program.replace('\n', '')
+
+def translate_from(cow_program: str):
+    """ translate from cow to own format for readability..
+
+    :param cow_program:
+    :return:
+    """
+    cow_program = cow_program.replace(' ', '')
+    cow_program = cow_program.replace('\n', '')
     prog_list = []
     i = 0
-    while i < len(program):
-        cmd = program[i: i + 3]
+    while i < len(cow_program):
+        cmd = cow_program[i: i + 3]
         prog_list.append(cmds[cmd])
         i += 3
     return prog_list
 
-def translate_to(prog):
+
+def translate_to(prog: List[str]):
+    """ Translate from own format to a cow script
+
+    :param prog:
+    :return:
+    """
     reverse = {}
     for k, v in cmds.items():
         reverse[v] = k
@@ -81,13 +94,15 @@ class Memory:
         return "|".join(row0)
 
 
-def run(prog):
+def run(prog, stop, is_in_cow):
+    if is_in_cow:
+        prog = translate_from(prog)
     print("start")
     steps = 0
     reg = None
     pp = 0
     mem = Memory()
-    while pp < len(prog) and steps < 10000:
+    while pp < len(prog) and steps < stop:
         cmd = prog[pp]
         if cmd == "mex":
             cmd = cmds[order[mem.get()]]
@@ -103,7 +118,7 @@ def run(prog):
                     level += 1
             pp -= 1
         elif cmd == "mp-":
-            mem.dec()
+            mem.left()
         elif cmd == "mp+":
             mem.right()
         elif cmd == "prs":
@@ -137,5 +152,6 @@ def run(prog):
             raise
         pp += 1
         steps += 1  # break from infinite loops
-    print(steps)
+    if steps == stop:
+        print(f"Program force exited after {steps} steps. Check for infinite loops or increase maximum steps.")
     print("end")
