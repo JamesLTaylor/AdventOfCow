@@ -30,6 +30,7 @@ def translate(filename):
                 new_line += line[i]
                 i += 1
         new_lines.append(new_line)
+    print(f"writing {output_filename}")
     with open(output_filename, 'w') as f:
         f.writelines(new_lines)
 
@@ -37,6 +38,6 @@ def translate(filename):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Translating cow files")
     parser.add_argument("file", help="The file that should be translated. If its extension is 'cow' it will"
-                                     "be translated to 'own' and vice versa")
+                                     " be translated to 'own' and vice versa")
     args = parser.parse_args()
     translate(args.file)

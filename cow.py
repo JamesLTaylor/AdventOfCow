@@ -1,13 +1,19 @@
-import sys
 import argparse
 import cow_emulator
 
 
-def run(args):
-    if len(sys.argv) > 0:
-        print(f"running Cow script: {args.file}. Format={args.format}. Will stop after {args.stop} steps")
+def run(file, code_format, max_steps):
+    """
+    Convert the file into a list of commands and run it.
 
-    with open(args.file) as f:
+    :param file:
+    :param code_format:
+    :param max_steps:
+    :return:
+    """
+    print(f"running Cow script: {file}. Format={code_format}. Will stop after {max_steps} steps")
+
+    with open(file) as f:
         lines = f.readlines()
 
     # remove comments
@@ -32,7 +38,7 @@ def run(args):
         prog_list.append(cmd)
         i += 3
 
-    cow_emulator.run(prog_list, args.stop, args.format == "cow")
+    cow_emulator.run(prog_list, max_steps, code_format == "cow")
 
 
 if __name__ == "__main__":
@@ -46,4 +52,4 @@ if __name__ == "__main__":
                                                                 "you from infinite loops. Sometimes to the mooing can be "
                                                                 "incessant.")
     args = parser.parse_args()
-    run(args)
+    run(args.file, args.format, args.stop)
