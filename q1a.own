@@ -1,0 +1,18 @@
+; data in mem, then target value
+; pointer at last
+; try to count until zero
+
+for
+  reg mp+ mp+ reg      ; shift current number 2 to right
+  mp- reg mp- reg mv+  ; shift count 1 to left
+  mp-                  ; point to next number
+end
+mp+ prn
+
+; now put all the numbers back carrying the count
+mp+ mp+
+for
+  mp- mp- reg mp+ reg  ; move the count to the right
+  mp+ reg mp- mp- reg  ; move the number to the left
+  mp+ mp+ mp+
+end

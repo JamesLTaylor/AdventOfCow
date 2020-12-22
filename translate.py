@@ -11,7 +11,7 @@ def translate(filename):
     filename, file_extension = os.path.splitext(filename)
 
     if file_extension == ".cow":
-        lookup = cow_emulator.cmds
+        lookup = cow_emulator.command_lookup
         output_filename = filename + ".own"
     elif file_extension == ".own":
         lookup = cow_emulator.get_reverse_commands()

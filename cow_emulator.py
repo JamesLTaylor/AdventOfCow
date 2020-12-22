@@ -1,6 +1,6 @@
 from typing import List
 
-cmds = {"moo": "end",
+command_lookup = {"moo": "end",
         "mOo": "mp-",
         "moO": "mp+",
         "mOO": "mex",  # execute memory
@@ -13,51 +13,112 @@ cmds = {"moo": "end",
         "OOM": "prn",  # print number from mem
         "oom": "inp"}  # read an int
 
-order = ["moo", "mOo", "moO", "mOO", "Moo", "MOo", "MoO", "MOO", "OOO", "MMM", "OOM", "oom"]
+command_order = ["moo", "mOo", "moO", "mOO", "Moo", "MOo", "MoO", "MOO", "OOO", "MMM", "OOM", "oom"]
 
 
 def get_reverse_commands():
     reverse = {}
-    for k, v in cmds.items():
+    for k, v in command_lookup.items():
         reverse[v] = k
     return reverse
 
-def translate_from(cow_program: str):
-    """ translate from cow to own format for readability..
 
-    :param cow_program:
-    :return:
+class Program:
     """
-    cow_program = cow_program.replace(' ', '')
-    cow_program = cow_program.replace('\n', '')
-    prog_list = []
-    i = 0
-    while i < len(cow_program):
-        cmd = cow_program[i: i + 3]
-        prog_list.append(cmds[cmd])
-        i += 3
-    return prog_list
-
-
-def translate_to(prog: List[str]):
-    """ Translate from own format to a cow script
-
-    :param prog:
-    :return:
+    Based on https://github.com/BigZaphod/COW/blob/master/source/cow.cpp
     """
-    reverse = {}
-    for k, v in cmds.items():
-        reverse[v] = k
-    moo = []
-    for cmd in prog:
-        moo.append(reverse[cmd])
-    return " ".join(moo)
+    def __init__(self, commands, mem, stop):
+        self.pp = 0
+        self.prog = commands
+        self.mem = mem
+        self.stop = stop
+
+    def run(self):
+        steps = 0
+        reg = None
+        while self.pp < len(self.prog) and steps < self.stop:
+            cmd = self.prog[self.pp]
+            if cmd == "mex":
+                cmd = command_lookup[command_order[self.mem.get()]]
+
+            if cmd == "end":
+                self.pp -= 1
+                level = 1
+                while level > 0:
+                    self.pp -= 1
+                    if self.prog[self.pp] == "for":
+                        level -= 1
+                    elif self.prog[self.pp] == "end":
+                        level += 1
+                self.pp -= 1
+            elif cmd == "mp-":
+                self.mem.left()
+            elif cmd == "mp+":
+                self.mem.right()
+            elif cmd == "prs":
+                print(chr(self.mem.get()))
+            elif cmd == "mv-":
+                self.mem.dec()
+            elif cmd == "mv+":
+                self.mem.inc()
+            elif cmd == "for" and self.mem.get() == 0:
+                self.pp += 1
+                level = 1
+                while level > 0:
+                    self.pp += 1
+                    if self.prog[self.pp] == "for":
+                        level += 1
+                    elif self.prog[self.pp] == "end":
+                        level -= 1
+                        # this is to handle the interleaved for-end so that a 'for' immediately before an
+                        # 'end' is neutralized.
+                        if self.prog[self.pp - 1] == "for":
+                            level -= 1
+            elif cmd == "for" and self.mem.get() != 0:
+                pass
+            elif cmd == "zer":
+                self.mem.set(0)
+            elif cmd == "reg" and reg is None:
+                reg = self.mem.get()
+            elif cmd == "reg" and reg is not None:
+                self.mem.set(reg)
+                reg = None
+            elif cmd == "prn":
+                print(self.mem.get())
+            else:
+                print(cmd)
+                raise
+            self.pp += 1
+            steps += 1  # break from infinite loops
+        if steps == self.stop:
+            print(f"Program force exited after {steps} steps. Check for infinite loops or increase maximum steps.")
+        print("end")
+
+    def __str__(self):
+        row0 = []
+        for i in range(self.pp - 10, self.pp + 11):
+            if i < 0:
+                continue
+            if i >= len(self.prog):
+                continue
+
+            val = 0
+            s0 = self.prog[i]
+            if i == self.pp:
+                s0 = "|" + s0 + "|"
+            row0.append(s0)
+        return " ".join(row0)
 
 
 class Memory:
-    def __init__(self):
-        self.mp = 0
+    def __init__(self, mem_init=None):
         self.values = {}
+        self.mp = 0
+        if mem_init is not None:
+            for i in range(len(mem_init)):
+                self.values[i] = mem_init[i]
+        self.mp = len(mem_init) - 1
+
 
     def inc(self):
         if self.mp in self.values:
@@ -93,71 +154,17 @@ class Memory:
             if i in self.values:
                 val = self.values[i]
             s0 = str(val)
-            s1 = str(i)
             if i == self.mp:
-                s1 = "*" + s1 + "*"
-            row0.append(s1 + ":" + s0)
+                s0 = "*" + s0 + "*"
+            row0.append(s0)
         return "|".join(row0)
 
 
-def run(prog, stop, is_in_cow):
+def run(prog, stop, is_in_cow, mem_init=None):
     if is_in_cow:
-        prog = [cmds[cmd] for cmd in prog]
+        prog = [command_lookup[cmd] for cmd in prog]
     print("start")
-    steps = 0
-    reg = None
-    pp = 0
-    mem = Memory()
-    while pp < len(prog) and steps < stop:
-        cmd = prog[pp]
-        if cmd == "mex":
-            cmd = cmds[order[mem.get()]]
+    mem = Memory(mem_init)
+    program = Program(prog, mem, stop)
+    program.run()
 
-        if cmd == "end":
-            pp -= 1
-            level = 1
-            while level > 0:
-                pp -= 1
-                if prog[pp] == "for":
-                    level -= 1
-                elif prog[pp] == "end":
-                    level += 1
-            pp -= 1
-        elif cmd == "mp-":
-            mem.left()
-        elif cmd == "mp+":
-            mem.right()
-        elif cmd == "prs":
-            print(chr(mem.get()))
-        elif cmd == "mv-":
-            mem.dec()
-        elif cmd == "mv+":
-            mem.inc()
-        elif cmd == "for" and mem.get() == 0:
-            pp += 1
-            level = 1
-            while level > 0:
-                pp += 1
-                if prog[pp] == "for":
-                    level += 1
-                elif prog[pp] == "end":
-                    level -= 1
-        elif cmd == "for" and mem.get() != 0:
-            pass
-        elif cmd == "zer":
-            mem.set(0)
-        elif cmd == "reg" and reg is None:
-            reg = mem.get()
-        elif cmd == "reg" and reg is not None:
-            mem.set(reg)
-            reg = None
-        elif cmd == "prn":
-            print(mem.get())
-        else:
-            print(cmd)
-            raise
-        pp += 1
-        steps += 1  # break from infinite loops
-    if steps == stop:
-        print(f"Program force exited after {steps} steps. Check for infinite loops or increase maximum steps.")
-    print("end")

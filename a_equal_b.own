@@ -1,5 +1,5 @@
-mv+ mv+ mp+ mv+ mv+ mv+              ;set mem1 = 2 and mem2 = 3
-for mv- mp- mv- mp+ end              ;dec both memory until mem2 = 0
+mv+ mv+ mp+ mv+ mv+ mv+              ; set mem1 = 2 and mem2 = 3
+for mv- mp- mv- mp+ end              ; dec both memory until mem2 = 0
 mv+ mp-                              ; inc mem2 and so that if they are both zero we get [0, 1]
 for zer mv+ prn mv- mp+ zer mp- end  ; if mem1 is non zero, print 1
 mp+
