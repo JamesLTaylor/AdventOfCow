@@ -1,34 +1,34 @@
 ; https://frank-buss.de/cow.html
 ; store 8 to next location
-OOO MoO MoO MoO MoO MoO MoO MoO MoO
+zer mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+
 
 ; copy 8 to next location and load register with it
-MMM moO MMM MMM
+reg mp+ reg reg
 
 ; copy 8 to next location
-moO MMM
+mp+ reg
 
 ; loop: use the number in current memory location as a counter
 ; for incrementing the previous memory location, which will be 16 after the loop
-MOO MOo mOo MoO moO moo
+for mv- mp- mv+ mp+ end
 
 ; back to the previous location and copy 16 to next location
-mOo MMM moO MMM MMM
+mp- reg mp+ reg reg
 
 ; copy 16 to the next location
-moO MMM
+mp+ reg
 
 ; same loop, but now resulting in 32
-MOO MOo mOo MoO moO moo
+for mv- mp- mv+ mp+ end
 
 ; back to the previous location and copy 32 to next location
-mOo MMM moO MMM MMM
+mp- reg mp+ reg reg
 
 ; copy 32 to the next location
-moO MMM
+mp+ reg
 
 ; same loop, but now resulting in 64
-MOO MOo mOo MoO moO moo
+for mv- mp- mv+ mp+ end
 
 ; at this point there are 8, 16, 32 and 64 in memory positions 1, 2, 3 and 4
 ; and the current memory position is 5
@@ -36,54 +36,54 @@ MOO MOo mOo MoO moO moo
 ; memory block 5 will be named A and block 6 is B
 
 ; A=6
-OOO MoO MoO MoO MoO MoO MoO
+zer mv+ mv+ mv+ mv+ mv+ mv+
 
 ; B=64
-mOo MMM moO moO MMM
+mp- reg mp+ mp+ reg
 
 ; A=A+B (70, ASCII for 'F')
-MOO MOo mOo MoO moO moo
+for mv- mp- mv+ mp+ end
 
 ; print the 'F'
-mOo Moo
+mp- prs
 
 ; next letter 'r', ASCII code 114
 ; A=64
-mOo MMM moO MMM
+mp- reg mp+ reg
 
 ; B=32
-mOo mOo MMM moO moO moO MMM
+mp- mp- reg mp+ mp+ mp+ reg
 
 ; A=A+B (96)
-MOO MOo mOo MoO moO moo
+for mv- mp- mv+ mp+ end
 
 ; B=A (96)
-mOo MMM moO MMM
+mp- reg mp+ reg
 
 ; B=B+18 (114)
-MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO
+mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+
 
 ; print
-Moo
+prs
 
 ; next character is 'a', ASCII code 97
 ; B=A (96)
-mOo MMM moO MMM
+mp- reg mp+ reg
 
 ; increment and print
 ; B=B+1
-MoO Moo
+mv+ prs
 
 ; next character is 'n', ASCII code 110
 ; B=A (96)
-mOo MMM moO MMM
+mp- reg mp+ reg
 
 ; B=B+14 (110)
-MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO MoO
+mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+ mv+
 
 ; print
-Moo
+prs
 
 ; next character is 'k', ASCII code 107
 ; B=B-3
-MOo MOo MOo Moo
+mv- mv- mv- prs
