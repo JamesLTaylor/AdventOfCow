@@ -4,6 +4,8 @@ import cow
 import cow_emulator
 
 # https://frank-buss.de/cow.html
+import translate
+
 frank = """OOOMoOMoOMoOMoOMoOMoOMoOMoOMMMmoOMMMMMMmoOMMMMOOMOomOoMoOmoOmoomOo
 MMMmoOMMMMMMmoOMMMMOOMOomOoMoOmoOmoomOoMMMmoOMMMMMMmoOMMMMOOMOomOo
 MoOmoOmooOOOMoOMoOMoOMoOMoOMoOmOoMMMmoOmoOMMMMOOMOomOoMoOmoOmoomOo
@@ -32,9 +34,11 @@ a_equal_b = "mv+ mv+ mp+ mv+ mv+ mv+ " \
 class Args:
     pass
 
-args = Args()
-args.file = "a_equal_b.own"
-args.stop = 10000
-args.format = "own"
-cow.run(args)
+translate.translate("a_equal_b.own")
+
+# args = Args()
+# args.file = "a_equal_b.own"
+# args.stop = 10000
+# args.format = "own"
+# cow.run(args)
 

@@ -1,0 +1,7 @@
+MoO MoO moO MoO MoO MoO              ;set mem1 = 2 and mem2 = 3
+MOO MOo mOo MOo moO moo              ;dec both memory until mem2 = 0
+MoO mOo                              ; inc mem2 and so that if they are both OOOo we get [0, 1]
+MOO OOO MoO OOM MOo moO OOO mOo moo  ; if mem1 is non OOOo, print 1
+moO
+MOO OOO OOM moo                      ; if mem2 is non OOOo print OOOo. This should only happen if mem1
+                                     ; was OOOo

@@ -16,6 +16,12 @@ cmds = {"moo": "end",
 order = ["moo", "mOo", "moO", "mOO", "Moo", "MOo", "MoO", "MOO", "OOO", "MMM", "OOM", "oom"]
 
 
+def get_reverse_commands():
+    reverse = {}
+    for k, v in cmds.items():
+        reverse[v] = k
+    return reverse
+
 def translate_from(cow_program: str):
     """ translate from cow to own format for readability..
 
