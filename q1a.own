@@ -71,11 +71,12 @@ for ; loop1.
 
         ; This is where we can do the actual test.
         ; mem should be ...,0,0,0,loop1,*loop2*,x1,x2,
-        ;mp+
-        ;for
-        ;    mv- mp+ mv+ mp-
-        ;end
-        ;mp+ prn mp- mp-
+        mp+ reg mp+ mp+ reg
+        ; ...,0,0,0,loop1,loop2,x1,x2,*x1*
+        for
+            mv- mp- mv+ mp+
+        end
+        mp- prn mp- mp-
     end
     mp-
     mv-
