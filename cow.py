@@ -23,7 +23,16 @@ def run(args):
             new_lines.append(line)
 
     prog = "".join(new_lines)
-    cow_emulator.run(prog, args.stop, args.format == "cow")
+    prog = prog.replace(' ', '')
+    prog = prog.replace('\n', '')
+    prog_list = []
+    i = 0
+    while i < len(prog):
+        cmd = prog[i: i + 3]
+        prog_list.append(cmd)
+        i += 3
+
+    cow_emulator.run(prog_list, args.stop, args.format == "cow")
 
 
 if __name__ == "__main__":

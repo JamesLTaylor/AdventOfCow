@@ -96,7 +96,7 @@ class Memory:
 
 def run(prog, stop, is_in_cow):
     if is_in_cow:
-        prog = translate_from(prog)
+        prog = [cmds[cmd] for cmd in prog]
     print("start")
     steps = 0
     reg = None
