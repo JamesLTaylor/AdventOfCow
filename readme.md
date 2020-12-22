@@ -29,3 +29,25 @@ start
 Program force exited after 500 steps. Check for infinite loops or increase maximum steps.
 end
 ```
+
+## Transliterating / Cheating
+
+Because I find it hard to remember the cow commands I have my own version of cow that is transliterated to
+human. It is still idiomatic cow but with sounds and letters that are more easily distinguished by the human 
+ear and eye.
+
+scripts can be transliterated in either direction with instructions like:
+
+```python translate.py fibonacci.cow```
+
+and
+
+```python translate.py fibonacci.own```
+
+and either version can be run with the cow.py interpreter.
+
+## Pre-loading Memory / More Cheating
+
+It can be hard to load data into memory in cow...
+ 
+ 

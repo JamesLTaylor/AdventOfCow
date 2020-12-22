@@ -1,0 +1,33 @@
+mv+
+mp+
+mv+
+mp-
+[[ main loop ]]
+for
+[[ print first number ]]
+prn
+[[ temp copy of first number ]]
+reg
+mp+
+mp+
+reg
+mp-
+mp-
+[[ store second number off in the first position now ]]
+mp+
+reg
+mp-
+reg
+[[ move back to temp number ]]
+mp+
+mp+
+[[ use temp to add to first and store in second in loop ]]
+for
+mv-
+mp-
+mv+
+mp+
+end
+mp-
+mp-
+end
