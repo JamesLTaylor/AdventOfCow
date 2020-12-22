@@ -16,3 +16,32 @@ for
   mp+ reg mp- mp- reg  ; move the number to the left
   mp+ mp+ mp+
 end
+
+mp- zer
+; memory is n,n,n,count,*0*,0
+
+; loop down from the count and collect the number that far to the left each time
+; need to keep distance travelled and mark a zero for the return trip
+
+mp- reg mp+ mp+ mp+ reg ; pick up the count and put it somewhere to loop down from
+; memory is n,n,n,count,0,0,*loop1*
+
+for ; loop1
+  reg mp- mp- mp- reg ; ...n,n,n,*loop*,0,0,loop1
+  for ; now run back and fetch the number
+    mp- reg mp+ mp+ reg
+    mp- reg mp- reg mv-
+  end
+  ; ...n,*0*,garbage,n...
+  mp+ mp+ reg mp- mp- reg
+  mp+ mp+
+  for ; go forward until the zero. ...n,x,garbage,*n*...
+    mp- mp- reg mp+ reg
+    mp+ reg mp- mp- reg
+    mp+ mp+ mp+
+  end
+
+  ; memory should be ...n,n,n,x,garbage,*0*,loop1
+  mp- mp- prn mp+ mp+ mp+
+  mv-
+end
