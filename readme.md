@@ -36,7 +36,7 @@ Because I find it hard to remember the cow commands I have my own version of cow
 human. It is still idiomatic cow but with sounds and letters that are more easily distinguished by the human 
 ear and eye.
 
-scripts can be transliterated in either direction with instructions like:
+Scripts can be transliterated in either direction with instructions like:
 
 ```python translate.py fibonacci.cow```
 
@@ -44,10 +44,21 @@ and
 
 ```python translate.py fibonacci.own```
 
-and either version can be run with the cow.py interpreter.
+and either version can be run with the cow.py interpreter. The direction that the commands should be 
+transliterated is determined by the extension.
 
 ## Pre-loading Memory / More Cheating
 
 It can be hard to load data into memory in cow...
+
+## Debugging
+
+For running a script in 'own' format I have added two extra commands:
+
+| Command        | Effect|
+| ------------- |-------------|
+| ```brk```     | a command which does nothing but you can add a breakpoint that is hit when it is executed. This allows you to stop and inspect the memory near a problem in your code.|
+| ```dbg```     | ```prn``` that is toggled by the debug mode of the execution.|
+ 
  
  

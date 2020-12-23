@@ -1,15 +1,19 @@
-; data in mem, then target value
-; pointer at last
-; try to count until zero
+; At this point in the code the memory needs to be a zero, then the elements of the input,
+; and then the target number (2020)
 
+; The pointer at the target values, collect it and move it far to the right for later use
+reg zer mp+ mp+ mp+ mp+ mp+ mp+ mp+ mp+ mp+     reg
+        mp- mp- mp- mp- mp- mp- mp- mp- mp- mp-
+
+; Find out how many elements there are in memory back until a zero
 for
-  reg mp+ mp+ reg      ; shift current number 2 to right
-  mp- reg mp- reg mv+  ; shift count 1 to left
-  mp-                  ; point to next number
+    reg mp+ mp+ reg      ; shift current number 2 to right
+    mp- reg mp- reg mv+  ; shift count 1 to left
+    mp-                  ; point to next number
 end
 mp+ prn
 
-; now put all the numbers back carrying the count
+; now put all the numbers back in their original places carrying the count to the right
 mp+ mp+
 for
   mp- mp- reg mp+ reg  ; move the count to the right
@@ -18,11 +22,10 @@ for
 end
 
 mp- zer
-; memory is n,n,n,count,*0*,0
+; memory is 0, n, ..., n,n,count,*0*,0
 
 ; loop down from the count and collect the number that far to the left each time
 ; need to keep distance travelled and mark a zero for the return trip
-
 mp- reg mp+ mp+ mp+ reg ; pick up the count and put it somewhere to loop down from
 ; memory is n,n,n,count,0,0,*loop1*
 
@@ -45,7 +48,7 @@ for ; loop1.
     ;END FETCH NUMBER ROUTINE
 
     ; memory should be ...n,n,n,x,garbage,*0*,loop1
-    mp- mp- reg zer prn reg prn reg zer prn mp+ zer mp+ mp+ mp+ mp+ reg mp- mp-; print the collected number
+    mp- mp- reg zer dbg reg dbg reg zer dbg mp+ zer mp+ mp+ mp+ mp+ reg mp- mp-; print the collected number
     ; memory should be ...n,n,n,0,0,0,*loop1*,loop2,x
     ; run inner loop
     reg mp+ reg mv-
@@ -66,17 +69,24 @@ for ; loop1.
             mp+ mp+ mp+
         end
         ;END FETCH NUMBER ROUTINE
-        mp- mp- prn reg zer mp+ zer mp+ mp+ mp+ mp+ mp+ reg mp- mp-;
+        mp- mp- dbg reg zer mp+ zer mp+ mp+ mp+ mp+ mp+ reg mp- mp-;
         mv-
 
-        ; This is where we can do the actual test.
+        ; Now add the two collected numbers
         ; mem should be ...,0,0,0,loop1,*loop2*,x1,x2,
         mp+ reg mp+ mp+ reg
-        ; ...,0,0,0,loop1,loop2,x1,x2,*x1*
+        mp- reg mp+ mp+ reg
+        ; ...n,0,0,0,loop1,loop2,x1,x2,x1,*x2*
         for
             mv- mp- mv+ mp+
         end
-        mp- prn mp- mp-
+        ; memory should be ...n,0,0,0,loop1,loop2,x1,x2,x1+x2,*0*,2020
+        mp- prn mp- mp- mp-
+        brk
+
+        ; Now we can compare with the target value and move the two answers even further right if they
+        ; are correct
+
     end
     mp-
     mv-

@@ -22,8 +22,16 @@ def translate(filename):
     for line in lines:
         i = 0
         new_line = ""
+        comment1 = line.find(';', )
+        if comment1 < 0:
+            comment1 = len(line)
+        comment2 = line.find('[', )
+        if comment2 < 0:
+            comment2 = len(line)
+        end_line = min(comment1, comment2)
+
         while i < len(line):
-            if (i+3) <= len(line) and line[i:i+3] in lookup:
+            if (i+3) <= end_line and line[i:i+3] in lookup:
                 new_line += lookup[line[i:i+3]]
                 i = i+3
             else:

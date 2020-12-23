@@ -20,6 +20,8 @@ def get_reverse_commands():
     reverse = {}
     for k, v in command_lookup.items():
         reverse[v] = k
+    reverse["dbg"] = ""
+    reverse["brk"] = ""
     return reverse
 
 
@@ -27,11 +29,12 @@ class Program:
     """
     Based on https://github.com/BigZaphod/COW/blob/master/source/cow.cpp
     """
-    def __init__(self, commands, mem, stop):
+    def __init__(self, commands, mem, stop, debug):
         self.pp = 0
         self.prog = commands
         self.mem = mem
         self.stop = stop
+        self.debug = debug
 
     def run(self):
         steps = 0
@@ -85,6 +88,11 @@ class Program:
                 reg = None
             elif cmd == "prn":
                 print(self.mem.get())
+            elif cmd == "dbg": # a debug print that can be toggled and will not be translated to cow
+                if self.debug:
+                    print(self.mem.get())
+            elif cmd == "brk": # a place to put a breakpoint
+                variable_that_exists_for_a_breakpoint = 1
             else:
                 print(cmd)
                 raise
@@ -160,11 +168,11 @@ class Memory:
         return "|".join(row0)
 
 
-def run(prog, stop, is_in_cow, mem_init=None):
+def run(prog, stop, is_in_cow, mem_init, debug):
     if is_in_cow:
         prog = [command_lookup[cmd] for cmd in prog]
     print("start")
     mem = Memory(mem_init)
-    program = Program(prog, mem, stop)
+    program = Program(prog, mem, stop, debug)
     program.run()
 

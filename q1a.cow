@@ -1,0 +1,93 @@
+; At this point in the code the memory needs to be a zero, then the elements of the input,
+; and then the target number (2020)
+
+; The pointer at the target values, collect it and move it far to the right for later use
+MMM OOO moO moO moO moO moO moO moO moO moO     MMM
+        mOo mOo mOo mOo mOo mOo mOo mOo mOo mOo
+
+; Find out how many elements there are in memory back until a zero
+MOO
+    MMM moO moO MMM      ; shift current number 2 to right
+    mOo MMM mOo MMM MoO  ; shift count 1 to left
+    mOo                  ; point to next number
+moo
+moO OOM
+
+; now put all the numbers back in their original places carrying the count to the right
+moO moO
+MOO
+  mOo mOo MMM moO MMM  ; move the count to the right
+  moO MMM mOo mOo MMM  ; move the number to the left
+  moO moO moO
+moo
+
+mOo OOO
+; memory is 0, n, ..., n,n,count,*0*,0
+
+; loop down from the count and collect the number that far to the left each time
+; need to keep distance travelled and mark a zero for the return trip
+mOo MMM moO moO moO MMM ; pick up the count and put it somewhere to loop down from
+; memory is n,n,n,count,0,0,*loop1*
+
+MOO ; loop1.
+    MMM mOo mOo mOo MMM ; ...n,n,n,*loop*,0,0,loop1
+
+    ;START FETCH NUMBER ROUTINE
+    MOO ; now run back and fetch the number
+        mOo MMM moO moO MMM
+        mOo MMM mOo MMM MOo
+    moo
+    ; ...n,*0*,garbage,n...
+    moO moO MMM mOo mOo MMM
+    moO moO
+    MOO ; go forward until the zero. ...n,x,garbage,*n*...
+        mOo mOo MMM moO MMM
+        moO MMM mOo mOo MMM
+        moO moO moO
+    moo
+    ;END FETCH NUMBER ROUTINE
+
+    ; memory should be ...n,n,n,x,garbage,*0*,loop1
+    mOo mOo MMM OOO  MMM  MMM OOO  moO OOO moO moO moO moO MMM mOo mOo; print the collected number
+    ; memory should be ...n,n,n,0,0,0,*loop1*,loop2,x
+    ; run inner loop
+    MMM moO MMM MOo
+    MOO
+        MMM mOo mOo mOo mOo MMM
+
+        ;START FETCH NUMBER ROUTINE
+        MOO ; now run back and fetch the number
+            mOo MMM moO moO MMM
+            mOo MMM mOo MMM MOo
+        moo
+        ; ...n,*0*,garbage,n...
+        moO moO MMM mOo mOo MMM
+        moO moO
+        MOO ; go forward until the zero. ...n,x,garbage,*n*...
+            mOo mOo MMM moO MMM
+            moO MMM mOo mOo MMM
+            moO moO moO
+        moo
+        ;END FETCH NUMBER ROUTINE
+        mOo mOo  MMM OOO moO OOO moO moO moO moO moO MMM mOo mOo;
+        MOo
+
+        ; Now add the two collected numbers
+        ; mem should be ...,0,0,0,loop1,*loop2*,x1,x2,
+        moO MMM moO moO MMM
+        mOo MMM moO moO MMM
+        ; ...n,0,0,0,loop1,loop2,x1,x2,x1,*x2*
+        MOO
+            MOo mOo MoO moO
+        moo
+        ; memory should be ...n,0,0,0,loop1,loop2,x1,x2,x1+x2,*0*,2020
+        mOo OOM mOo mOo mOo
+        
+
+        ; Now we can compare with the target value and move the two answers even further right if they
+        ; are correct
+
+    moo
+    mOo
+    MOo
+moo

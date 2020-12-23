@@ -2,7 +2,7 @@ import argparse
 import cow_emulator
 
 
-def run(file, code_format, max_steps, mem_init=None):
+def run(file, code_format, max_steps, mem_init=None, debug=False):
     """
     Convert the file into a list of commands and run it.
 
@@ -10,6 +10,7 @@ def run(file, code_format, max_steps, mem_init=None):
     :param file:
     :param code_format:
     :param max_steps:
+    :param debug:
     :return:
     """
     print(f"running Cow script: {file}. Format={code_format}. Will stop after {max_steps} steps")
@@ -39,7 +40,7 @@ def run(file, code_format, max_steps, mem_init=None):
         prog_list.append(cmd)
         i += 3
 
-    cow_emulator.run(prog_list, max_steps, code_format == "cow", mem_init)
+    cow_emulator.run(prog_list, max_steps, code_format == "cow", mem_init, debug)
 
 
 if __name__ == "__main__":
