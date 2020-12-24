@@ -1,17 +1,17 @@
-; At this point in the code the memory needs to be a zero, then the elements of the input,
-; and then the target number (2020)
+; To run from here the memory needs to be initialized to a zero, then the elements of the input,
+; and then the target number (2020). The memory pointer is at the target number.
 
-; The pointer at the target values, collect it and move it far to the right for later use
+; Collect the target number and move it far to the right for later use
 MMM OOO moO moO moO moO moO moO moO moO moO     MMM
         mOo mOo mOo mOo mOo mOo mOo mOo mOo mOo
 
-; Find out how many elements there are in memory back until a zero
+; Find out how many elements there are in memory by counting back to a zero
 MOO
     MMM moO moO MMM      ; shift current number 2 to right
     mOo MMM mOo MMM MoO  ; shift count 1 to left
     mOo                  ; point to next number
 moo
-moO OOM
+moO  ; print the number of non zero elements found
 
 ; now put all the numbers back in their original places carrying the count to the right
 moO moO
@@ -25,11 +25,11 @@ mOo OOO
 ; memory is 0, n, ..., n,n,count,*0*,0
 
 ; loop down from the count and collect the number that far to the left each time
-; need to keep distance travelled and mark a zero for the return trip
+; need to mark a zero for the return trip
 mOo MMM moO moO moO MMM ; pick up the count and put it somewhere to loop down from
 ; memory is n,n,n,count,0,0,*loop1*
 
-MOO ; loop1.
+MOO ; Outer loop
     MMM mOo mOo mOo MMM ; ...n,n,n,*loop*,0,0,loop1
 
     ;START FETCH NUMBER ROUTINE
@@ -50,9 +50,9 @@ MOO ; loop1.
     ; memory should be ...n,n,n,x,garbage,*0*,loop1
     mOo mOo MMM OOO  MMM  MMM OOO  moO OOO moO moO moO moO MMM mOo mOo; print the collected number
     ; memory should be ...n,n,n,0,0,0,*loop1*,loop2,x
-    ; run inner loop
+
     MMM moO MMM MOo
-    MOO
+    MOO ; Inner loop
         MMM mOo mOo mOo mOo MMM
 
         ;START FETCH NUMBER ROUTINE
@@ -81,12 +81,33 @@ MOO ; loop1.
             MOo mOo MoO moO
         moo
         ; memory should be ...n,0,0,0,loop1,loop2,x1,x2,x1+x2,*0*,2020
-        mOo OOM mOo mOo mOo
-        
+        mOo  mOo mOo mOo
 
         ; Now we can compare with the target value and move the two answers even further right if they
         ; are correct
+        ; '1721|979|366|299|675|1456|0|0|0|6|*4*|1721|979|2700|0|2020|0|0|0|0|0'
+        moO moO moO MMM moO moO moO MMM
+        mOo MMM moO moO MMM
 
+        MOO MOo mOo MOo moO moo              ; dec both memory until mem2 = 0
+        MoO mOo                              ; inc mem2 and so that if they are both zero we get [0, 1]
+
+        MOO                                  ; this branch runs if numbers are not equal
+            OOO moO OOO mOo                      ; zero so that next branch does not run
+        moo
+        moO
+         ;
+        MOO                                  ; Will only run this if two values were equal
+                                             ; Print the two numbers that will sum to 2020
+        ; 0|0|6|4|1721|979|2700|0|2020|0|*0*|0|0|0|0|0|0|0|0|0|0
+            OOO
+            mOo mOo mOo mOo mOo
+            OOM
+            mOo
+            OOM
+            moO moO moO moO moO moO
+        moo
+        mOo mOo mOo mOo mOo mOo mOo
     moo
     mOo
     MOo
